@@ -52,7 +52,7 @@ export const FileSystemItem: React.FC<FileSystemProps> = ({ item, level }) => {
         <span className="text-gray-800 dark:text-gray-200">{item.name}</span>
       </Button>
       {isOpen && item.children && (
-        <div className="ml-4">
+        <div className="ml-2">
           {item.children.map((child, index) => (
             <FileSystemItem key={index} item={child} level={level + 1} />
           ))}
