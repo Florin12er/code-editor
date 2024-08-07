@@ -7,6 +7,7 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { SignOutButton } from "@clerk/nextjs";
 import { Command, Plus, Minus, FolderOpen, Clock, FolderPlus, LogOut } from "lucide-react";
 import { RefObject } from "react";
 
@@ -16,7 +17,7 @@ interface NavbarDropdownProps {
     menuButtonRef: RefObject<HTMLButtonElement>;
 }
 
-export const NavbarDropdown = ({ isOpen, setIsOpen, menuButtonRef }: NavbarDropdownProps) => {
+export const NavbarDropdown = ({ isOpen, setIsOpen }: NavbarDropdownProps) => {
     const { toggleCommand } = useSearch();
 
     return (
@@ -63,7 +64,7 @@ export const NavbarDropdown = ({ isOpen, setIsOpen, menuButtonRef }: NavbarDropd
                 <DropdownMenuSeparator className="my-2" />
                 <DropdownMenuItem className="py-2 text-red-500 hover:text-red-600 dark:text-red-400 dark:hover:text-red-300">
                     <LogOut className="mr-3 h-4 w-4" />
-                    <span>Quit</span>
+                    <SignOutButton>Logout</SignOutButton>
                 </DropdownMenuItem>
             </DropdownMenuContent>
         </DropdownMenu>
