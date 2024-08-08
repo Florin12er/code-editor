@@ -8,7 +8,7 @@ import {
     Folder,
     FolderOpen,
 } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export interface FileSystemItem {
     name: string;
@@ -63,3 +63,64 @@ export const FileSystemItem: React.FC<FileSystemProps> = ({ item, level }) => {
         </div>
     );
 };
+
+// Main FileSystem Component
+const FileSystem: React.FC = () => {
+    const [fileSystemData, setFileSystemData] = useState<FileSystemItem | null>(null);
+
+    useEffect(() => {
+        const fetchFileSystem = async () => {
+            const storedProject = localStorage.getItem("currentProject");
+            if (!storedProject) return;
+
+            const project = JSON.parse(storedProject);
+            const projectId = project.id;
+
+            try {
+                // Fetch files and folders from your API
+                const responseFiles = await fetch(`/api/files?projectId=${projectId}`);
+                const files = await responseFiles.json();
+
+                const responseFolders = await fetch(`/api/folders?projectId=${projectId}`);
+                const folders = await responseFolders.json();
+
+                // Build the file system structure
+                const buildFileSystem = (folders: any[], files: any[]): FileSystemItem => {
+                    return {
+                        name: "Root",
+                        type: "folder",
+                        children: [
+                            ...folders.map(folder => ({
+                                name: folder.name,
+                                type: "folder",
+                                children: [], // Initialize with empty children for now
+                            })),
+                            ...files.map(file => ({
+                                name: file.name,
+                                type: "file",
+                            })),
+                        ],
+                    };
+                };
+
+                setFileSystemData(buildFileSystem(folders, files));
+            } catch (error) {
+                console.error("Error fetching file system data:", error);
+            }
+        };
+
+        fetchFileSystem();
+    }, []);
+
+    return (
+        <div>
+            {fileSystemData ? (
+                <FileSystemItem item={fileSystemData} level={0} />
+            ) : (
+                <p>Loading...</p>
+            )}
+        </div>
+    );
+};
+
+export default FileSystem;
